@@ -1,8 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import VideoCard from './VideoCard'
+import { Link } from 'react-router-dom'
+
+const apiUrl = import.meta.env.VITE_API_BASE_URL
 
 const VideoContainer = () => {
+  const [videoData, setVideoData] = useState([])
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(apiUrl)
+      const data = await response?.json()
+      const items = await data?.items
+      setVideoData(items)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  if (videoData.length === 0){
+    return <div>
+      <p>Loading</p>
+    </div>
+  }
+
   return (
-    <div>VideoContainer</div>
+    <div className='flex flex-wrap my-6 mx-6'>
+      {videoData.map((video) => (
+        <Link to={`/watch?v=${video.id}`}>
+          <VideoCard key={video.id} info={video} />
+        </Link>
+      ))}
+    </div>
   )
 }
 

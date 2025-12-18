@@ -3,6 +3,7 @@ import Body from "./components/Body"
 import Head from "./components/Head"
 import { Provider } from "react-redux"
 import store from "./store/appStore"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
 
@@ -21,8 +22,10 @@ function App() {
   return (
     <Provider store={store}>
       <div className="">
-        <Head />
-        <Body />
+        <BrowserRouter>
+          <Head />
+          <Body />
+        </BrowserRouter>
       </div>
     </Provider>
   )

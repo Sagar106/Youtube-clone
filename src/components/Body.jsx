@@ -1,12 +1,16 @@
-import React from 'react'
+import { Route, Routes } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import MainContainer from './MainContainer'
+import WatchPage from './WatchPage'
 
 const Body = () => {
   return (
-    <div className='flex'>
+    <div className='grid grid-flow-col'>
         <Sidebar />
-        <MainContainer />
+        <Routes>
+          <Route path='/' element={<MainContainer />} />
+          <Route path='/watch' element={<WatchPage />} />
+        </Routes>
     </div>
   )
 }
