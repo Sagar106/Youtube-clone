@@ -1,13 +1,13 @@
-import "./App.css"
-import Body from "./components/Body"
-import Head from "./components/Head"
-import { Provider } from "react-redux"
-import store from "./store/appStore"
+import "./App.css";
+import Body from "./components/Body";
+import Head from "./components/Head";
+import { Provider } from "react-redux";
+import store from "./store/appStore";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-
-  {/** 
+  {
+    /** 
     - Head
     - Body
         - Sidebar
@@ -17,7 +17,8 @@ function App() {
           - VideoContainer
             - VideoCard
 
-  */}
+  */
+  }
 
   return (
     <Provider store={store}>
@@ -28,7 +29,7 @@ function App() {
         </BrowserRouter>
       </div>
     </Provider>
-  )
+  );
 }
 
-export default App
+export default App;
