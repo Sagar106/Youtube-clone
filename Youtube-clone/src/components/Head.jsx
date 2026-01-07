@@ -2,16 +2,18 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { ImYoutube2 } from "react-icons/im";
 import { FaUserAlt } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../store/appSlice";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SuggestionsList from "./SuggestionsList";
+import { cacheResults } from "../store/searchSlice";
 
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchCache = useSelector((store) => store.search);
   const dispatch = useDispatch();
 
   const toggleHandler = () => {
@@ -25,7 +27,11 @@ const Head = () => {
       );
       const data = await response.json();
       setSuggestions(data.suggestions);
-      console.log(data);
+      dispatch(
+        cacheResults({
+          [searchQuery]: data.suggestions,
+        })
+      );
     } catch (error) {
       console.log(error);
     }
@@ -34,7 +40,13 @@ const Head = () => {
   useEffect(() => {
     if (!searchQuery) return;
 
-    const timer = setTimeout(fetchSearchData, 350);
+    const timer = setTimeout(() => {
+      if (searchCache[searchQuery]) {
+        setSuggestions(searchCache[searchQuery]);
+      } else {
+        fetchSearchData();
+      }
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
@@ -67,7 +79,7 @@ const Head = () => {
           </button>
         </div>
         {showSuggestions && (
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 z-10 bg-white border border-gray-300 rounded-lg shadow-lg w-1/2 max-h-60 overflow-y-auto scrollbar-hide">
+          <div className="absolute top-full left-1/2 transform -translate-x-[56%] z-10 bg-white border border-gray-300 rounded-lg shadow-lg w-1/2 max-h-60 overflow-y-auto scrollbar-hide">
             {suggestions.map((s) => (
               <SuggestionsList suggestion={s.value} />
             ))}
