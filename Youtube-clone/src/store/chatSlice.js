@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const MAX_MESSAGES = 50;
+
 const chatSlice = createSlice({
   name: "chat",
   initialState: {
@@ -7,7 +9,10 @@ const chatSlice = createSlice({
   },
   reducers: {
     addMessage: (state, action) => {
-      state.messages.push(action.payload);
+      state.messages.unshift(action.payload);
+      if (state.messages.length > MAX_MESSAGES) {
+        state.messages.length = MAX_MESSAGES;
+      }
     },
   },
 });
