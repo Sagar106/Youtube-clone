@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";
-
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
+import { useSelector } from "react-redux";
 
 const VideoContainer = () => {
   const [videoData, setVideoData] = useState([]);
+  const searchedVideos = useSelector((store) => store.searchedVideos.videos);
+  const getVideoId = (video) =>
+    typeof video.id === "string" ? video.id : video.id?.videoId;
+
+  const videosToDisplay =
+    searchedVideos && searchedVideos.length > 0 ? searchedVideos : videoData;
 
   const fetchData = async () => {
     try {
-      const response = await fetch(apiUrl);
+      const response = await fetch("http://localhost:5000/api/getVideoList");
       const data = await response?.json();
       const items = await data?.items;
       setVideoData(items);
@@ -22,7 +27,7 @@ const VideoContainer = () => {
     fetchData();
   }, []);
 
-  if (videoData.length === 0) {
+  if (!videosToDisplay) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <div className="text-center">
@@ -37,11 +42,17 @@ const VideoContainer = () => {
 
   return (
     <div className="flex flex-wrap my-6 mx-5">
-      {videoData.map((video) => (
-        <Link key={video.id} to={`/watch?v=${video.id}`}>
-          <VideoCard key={video.id} info={video} />
-        </Link>
-      ))}
+      {videosToDisplay.map((video) => {
+        const videoId = getVideoId(video);
+
+        if (!videoId) return null;
+
+        return (
+          <Link key={videoId} to={`/watch?v=${videoId}`}>
+            <VideoCard info={video} />
+          </Link>
+        );
+      })}
     </div>
   );
 };

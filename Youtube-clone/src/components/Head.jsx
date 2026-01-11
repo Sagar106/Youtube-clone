@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SuggestionsList from "./SuggestionsList";
 import { cacheResults } from "../store/searchSlice";
+import { setSearchedVideos } from "../store/searchedVideosSlice";
 
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,6 +19,22 @@ const Head = () => {
 
   const toggleHandler = () => {
     dispatch(toggleMenu());
+  };
+
+  const fetchSearchedVideos = async (query) => {
+    if (!query) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/searchVideos?q=${query}`
+      );
+      const data = await response.json();
+      const items = data?.items || [];
+
+      dispatch(setSearchedVideos(items));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchSearchData = async () => {
@@ -35,6 +52,15 @@ const Head = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleSearch = (search) => {
+    setSearchQuery(search);
+    setShowSuggestions(false);
+  };
+
+  const handleSearchClick = () => {
+    fetchSearchedVideos(searchQuery);
   };
 
   useEffect(() => {
@@ -74,14 +100,21 @@ const Head = () => {
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setShowSuggestions(false)}
           />
-          <button className="px-6 py-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-full hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+          <button
+            onClick={handleSearchClick}
+            className="px-6 py-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-full hover:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+          >
             <FaSearch fontSize="18px" className="text-gray-600" />
           </button>
         </div>
         {showSuggestions && (
           <div className="absolute top-full left-1/2 transform -translate-x-[56%] z-10 bg-white border border-gray-300 rounded-lg shadow-lg w-1/2 max-h-60 overflow-y-auto scrollbar-hide">
-            {suggestions.map((s) => (
-              <SuggestionsList suggestion={s.value} />
+            {suggestions.map((s, i) => (
+              <SuggestionsList
+                key={i}
+                suggestion={s.value}
+                handleSearch={handleSearch}
+              />
             ))}
           </div>
         )}
