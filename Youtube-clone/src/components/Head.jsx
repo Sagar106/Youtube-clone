@@ -9,6 +9,9 @@ import { Link } from "react-router-dom";
 import SuggestionsList from "./SuggestionsList";
 import { cacheResults } from "../store/searchSlice";
 import { setSearchedVideos } from "../store/searchedVideosSlice";
+import { CiLight } from "react-icons/ci";
+import { CiDark } from "react-icons/ci";
+import { changeTheme } from "../store/themeSlice";
 
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,6 +19,7 @@ const Head = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchCache = useSelector((store) => store.search);
   const dispatch = useDispatch();
+  const mode = useSelector((store) => store.theme.mode);
 
   const toggleHandler = () => {
     dispatch(toggleMenu());
@@ -89,7 +93,7 @@ const Head = () => {
           <ImYoutube2 fontSize="80px" className="pl-2" />
         </Link>
       </div>
-      <div className="pt-6 text-center col-span-10 relative">
+      <div className="pt-6 text-center col-span-9 relative">
         <div className="flex items-center justify-center">
           <input
             type="text"
@@ -119,7 +123,15 @@ const Head = () => {
           </div>
         )}
       </div>
-      <div className="mt-8 pr-6 flex justify-end col-span-1">
+      <div className="mt-8 pr-6 flex justify-end col-span-2">
+        <button
+          onClick={() =>
+            dispatch(changeTheme(mode === "light" ? "dark" : "light"))
+          }
+          className="mx-4 mb-5 rounded-full hover:bg-gray-200 cursor-pointer"
+        >
+          {mode === "light" ? <CiDark size={20} /> : <CiLight size={20} />}
+        </button>
         <FaUserAlt size={20} />
       </div>
     </div>
