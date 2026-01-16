@@ -4,7 +4,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../store/appSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import SuggestionsList from "./SuggestionsList";
 import { cacheResults } from "../store/searchSlice";
@@ -20,6 +20,8 @@ const Head = () => {
   const searchCache = useSelector((store) => store.search);
   const dispatch = useDispatch();
   const mode = useSelector((store) => store.theme.mode);
+
+  const cachedResults = searchCache[searchQuery];
 
   const toggleHandler = () => {
     dispatch(toggleMenu());
@@ -41,7 +43,7 @@ const Head = () => {
     }
   };
 
-  const fetchSearchData = async () => {
+  const fetchSearchData = useCallback(async () => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/search?q=${searchQuery}`
@@ -56,7 +58,7 @@ const Head = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [searchQuery, dispatch]);
 
   const handleSearch = (search) => {
     setSearchQuery(search);
@@ -71,22 +73,26 @@ const Head = () => {
     if (!searchQuery) return;
 
     const timer = setTimeout(() => {
-      if (searchCache[searchQuery]) {
-        setSuggestions(searchCache[searchQuery]);
+      if (cachedResults) {
+        setSuggestions(cachedResults);
       } else {
         fetchSearchData();
       }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [searchQuery, cachedResults, fetchSearchData]);
 
   return (
-    <div className="grid grid-flow-col shadow">
+    <div
+      className={`grid grid-flow-col shadow ${
+        mode === "light" ? "bg-amber-100" : "bg-gray-900"
+      } `}
+    >
       <div className="flex justify-start pl-6 col-span-1">
         <RxHamburgerMenu
-          fontSize="30px"
-          className="mt-6 cursor-pointer"
+          fontSize="35px"
+          className="mt-6 cursor-pointer rounded-4xl shadow-md bg-white p-2 hover:bg-black hover:text-white"
           onClick={() => toggleHandler()}
         />
         <Link to="/">
@@ -98,7 +104,7 @@ const Head = () => {
           <input
             type="text"
             placeholder="Search"
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
@@ -123,12 +129,12 @@ const Head = () => {
           </div>
         )}
       </div>
-      <div className="mt-8 pr-6 flex justify-end col-span-2">
+      <div className="mt-8 pr-6 my-5 flex justify-end col-span-2 items-center">
         <button
           onClick={() =>
             dispatch(changeTheme(mode === "light" ? "dark" : "light"))
           }
-          className="mx-4 mb-5 rounded-full hover:bg-gray-200 cursor-pointer"
+          className="mx-4 p-2 rounded-full hover:bg-gray-200 cursor-pointer"
         >
           {mode === "light" ? <CiDark size={20} /> : <CiLight size={20} />}
         </button>

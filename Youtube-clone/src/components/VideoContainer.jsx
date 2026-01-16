@@ -41,7 +41,7 @@ const VideoContainer = () => {
   }
 
   return (
-    <div className="flex flex-wrap my-6 mx-5">
+    <div className="flex flex-wrap my-6 mx-10">
       {videosToDisplay.map((video) => {
         const videoId = getVideoId(video);
 
