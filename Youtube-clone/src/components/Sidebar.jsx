@@ -6,6 +6,7 @@ import { closeMenu, toggleMenu } from "../store/appSlice";
 
 const Sidebar = () => {
   const isMenuOpen = useSelector((store) => store.app.isMenuOpen);
+  const theme = useSelector((store) => store.theme.mode);
   const dispatch = useDispatch();
 
   const toggleHandler = () => {
@@ -25,30 +26,67 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-65 bg-white shadow-lg z-50
-          transform transition-transform duration-500
+        className={`fixed top-0 left-0 h-full w-65 shadow-lg z-50
+          transform transition-transform duration-500 ${
+            theme === "dark" ? "bg-[#212121] text-white" : "bg-white"
+          }
           ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex justify-start pl-6">
           <RxHamburgerMenu
             fontSize="35px"
-            className="mt-6 cursor-pointer rounded-4xl shadow-md bg-white p-2 hover:bg-black hover:text-white"
+            className={`mt-6 cursor-pointer rounded-4xl shadow-md p-2 ${
+              theme === "dark"
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-white text-black hover:bg-black hover:text-white"
+            }`}
             onClick={() => toggleHandler()}
           />
-          <ImYoutube2 fontSize="80px" className="pl-2" />
+          <ImYoutube2
+            fontSize="80px"
+            className={`pl-2 ${
+              theme === "dark" ? "text-white" : "text-red-600"
+            }`}
+          />
         </div>
         <div className="px-3">
           <ul className="m-2">
-            <li className="mt-2 p-2 bg-red-300 rounded-sm">Home</li>
-            <li className="mt-2 p-2 bg-red-300 rounded-sm">Shorts</li>
+            <li
+              className={`mt-2 p-2 rounded-sm font-semibold cursor-pointer transition-colors ${
+                theme === "dark"
+                  ? "bg-red-700 hover:bg-red-600"
+                  : "bg-red-300 hover:bg-red-400"
+              }`}
+            >
+              Home
+            </li>
+            <li
+              className={`mt-2 p-2 rounded-sm font-semibold cursor-pointer transition-colors ${
+                theme === "dark"
+                  ? "bg-red-700 hover:bg-red-600"
+                  : "bg-red-300 hover:bg-red-400"
+              }`}
+            >
+              Shorts
+            </li>
           </ul>
 
-          <h1 className="font-bold mx-2">Subscriptions</h1>
-          <ul className="m-2 space-y-2">
-            <li>Music</li>
-            <li>Sports</li>
-            <li>Gaming</li>
-            <li>Movies</li>
+          <h1 className="font-bold mx-2 mt-6 mb-4">Subscriptions</h1>
+          <ul
+            className={`m-2 space-y-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}
+          >
+            <li className="hover:text-white cursor-pointer transition-colors">
+              Music
+            </li>
+            <li className="hover:text-white cursor-pointer transition-colors">
+              Sports
+            </li>
+            <li className="hover:text-white cursor-pointer transition-colors">
+              Gaming
+            </li>
+            <li className="hover:text-white cursor-pointer transition-colors">
+              Movies
+            </li>
           </ul>
         </div>
       </div>

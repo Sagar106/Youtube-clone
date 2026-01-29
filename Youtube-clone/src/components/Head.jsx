@@ -32,7 +32,7 @@ const Head = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/searchVideos?q=${query}`
+        `http://localhost:5000/api/searchVideos?q=${query}`,
       );
       const data = await response.json();
       const items = data?.items || [];
@@ -46,14 +46,14 @@ const Head = () => {
   const fetchSearchData = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/search?q=${searchQuery}`
+        `http://localhost:5000/api/search?q=${searchQuery}`,
       );
       const data = await response.json();
       setSuggestions(data.suggestions);
       dispatch(
         cacheResults({
           [searchQuery]: data.suggestions,
-        })
+        }),
       );
     } catch (error) {
       console.log(error);
@@ -85,8 +85,8 @@ const Head = () => {
 
   return (
     <div
-      className={`grid grid-flow-col shadow ${
-        mode === "light" ? "bg-amber-100" : "bg-gray-900"
+      className={`grid grid-flow-col shadow-md ${
+        mode === "light" ? "bg-amber-100" : "bg-[#272727]"
       } `}
     >
       <div className="flex justify-start pl-6 col-span-1">
@@ -96,7 +96,10 @@ const Head = () => {
           onClick={() => toggleHandler()}
         />
         <Link to="/">
-          <ImYoutube2 fontSize="80px" className="pl-2" />
+          <ImYoutube2
+            fontSize="80px"
+            className={`pl-2 ${mode === "dark" ? "text-white" : "text-red-600"}`}
+          />
         </Link>
       </div>
       <div className="pt-6 text-center col-span-9 relative">
@@ -129,16 +132,21 @@ const Head = () => {
           </div>
         )}
       </div>
-      <div className="mt-8 pr-6 my-5 flex justify-end col-span-2 items-center">
+      <div className="mt-8 pr-6 my-5 flex justify-end col-span-2 items-center gap-6">
         <button
           onClick={() =>
             dispatch(changeTheme(mode === "light" ? "dark" : "light"))
           }
-          className="mx-4 p-2 rounded-full hover:bg-gray-200 cursor-pointer"
+          className={`p-2 rounded-full transition-all cursor-pointer duration-200 ${
+            mode === "light"
+              ? "hover:bg-gray-300 text-gray-800"
+              : "hover:bg-gray-600 text-yellow-300"
+          }`}
+          title="Toggle theme"
         >
-          {mode === "light" ? <CiDark size={20} /> : <CiLight size={20} />}
+          {mode === "light" ? <CiDark size={24} /> : <CiLight size={24} />}
         </button>
-        <FaUserAlt size={20} />
+        <FaUserAlt size={20} className={mode === "dark" ? "text-white" : ""} />
       </div>
     </div>
   );

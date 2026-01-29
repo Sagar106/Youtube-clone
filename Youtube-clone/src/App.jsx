@@ -22,7 +22,7 @@ function App() {
 
   return (
     <Provider store={store}>
-      <div className="">
+      <div className="min-h-screen">
         <BrowserRouter>
           <Head />
           <Body />

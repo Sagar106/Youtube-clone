@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { FaUserAlt, FaThumbsUp, FaThumbsDown } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Comment = ({ comment }) => {
   const [showReplies, setShowReplies] = useState(false);
+  const theme = useSelector((store) => store.theme.mode);
 
   return (
-    <div className="flex p-4 bg-white border-b border-gray-200">
+    <div className="flex p-4 border-b-gray-300">
       <div className="shrink-0 mr-3">
         <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
           <FaUserAlt size={16} className="text-gray-600" />
@@ -13,13 +15,19 @@ const Comment = ({ comment }) => {
       </div>
       <div className="flex-1">
         <div className="flex items-center mb-1">
-          <h2 className="font-semibold text-sm text-gray-900 mr-2">
+          <h2
+            className={`font-semibold text-sm mr-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+          >
             {comment.name}
           </h2>
           <span className="text-xs text-gray-500">2 days ago</span>{" "}
           {/* Placeholder timestamp */}
         </div>
-        <p className="text-sm text-gray-800 mb-2">{comment.text}</p>
+        <p
+          className={`text-sm mb-2 ${theme === "dark" ? "text-white" : "text-gray-800"}`}
+        >
+          {comment.text}
+        </p>
         <div className="flex items-center space-x-4">
           <button className="flex items-center space-x-1 text-xs text-gray-600 hover:text-gray-900">
             <FaThumbsUp size={12} />

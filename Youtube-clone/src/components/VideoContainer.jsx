@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearSearchedVideos } from "../store/searchedVideosSlice";
 
 const VideoContainer = () => {
   const [videoData, setVideoData] = useState([]);
+  const dispatch = useDispatch();
+  const theme = useSelector((store) => store.theme.mode);
   const searchedVideos = useSelector((store) => store.searchedVideos.videos);
   const getVideoId = (video) =>
     typeof video.id === "string" ? video.id : video.id?.videoId;
@@ -24,15 +27,24 @@ const VideoContainer = () => {
   };
 
   useEffect(() => {
+    dispatch(clearSearchedVideos());
     fetchData();
   }, []);
 
   if (!videosToDisplay) {
     return (
-      <div className="flex justify-center items-center min-h-[50vh]">
+      <div
+        className={`flex justify-center items-center min-h-[50vh] ${
+          theme === "dark" ? "bg-[#000000]" : "bg-white"
+        }`}
+      >
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p className="text-lg font-semibold text-gray-600">
+          <p
+            className={`text-lg font-semibold ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
             Loading videos...
           </p>
         </div>
@@ -41,7 +53,11 @@ const VideoContainer = () => {
   }
 
   return (
-    <div className="flex flex-wrap my-6 mx-10">
+    <div
+      className={`flex flex-wrap my-6 mx-10 min-h-screen ${
+        theme === "dark" ? "bg-[#000000]" : "bg-white"
+      }`}
+    >
       {videosToDisplay.map((video) => {
         const videoId = getVideoId(video);
 

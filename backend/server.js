@@ -42,6 +42,18 @@ app.get("/api/getVideoList", async (req, res) => {
   res.json(data);
 });
 
+app.get("/api/getVideoDetails/:videoId", async (req, res) => {
+  const videoId = req.params.videoId;
+
+  const response = await fetch(
+    `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`,
+  );
+
+  const data = await response.json();
+
+  res.json(data);
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

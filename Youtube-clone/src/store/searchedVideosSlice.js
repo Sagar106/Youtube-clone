@@ -9,9 +9,12 @@ const searchedVideosSlice = createSlice({
     setSearchedVideos: (state, action) => {
       state.videos = action.payload;
     },
+    clearSearchedVideos: (state, action) => {
+      state.videos = [];
+    },
   },
 });
 
-export const { setSearchedVideos } = searchedVideosSlice.actions;
+export const { setSearchedVideos, clearSearchedVideos } = searchedVideosSlice.actions;
 
 export default searchedVideosSlice.reducer;
