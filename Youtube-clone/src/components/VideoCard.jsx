@@ -14,6 +14,8 @@ const VideoCard = ({ info }) => {
         className="rounded-lg w-100"
         alt="video"
         src={thumbnails.medium.url}
+        fetchPriority="high"
+        loading="eager"
       />
       <p
         className={`py-2 px-2 font-semibold ${theme === "dark" ? "text-amber-50" : ""}`}

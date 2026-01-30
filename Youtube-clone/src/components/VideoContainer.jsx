@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearSearchedVideos } from "../store/searchedVideosSlice";
 
 const VideoContainer = () => {
-  const [videoData, setVideoData] = useState([]);
+  const [videoData, setVideoData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const theme = useSelector((store) => store.theme.mode);
   const searchedVideos = useSelector((store) => store.searchedVideos.videos);
@@ -17,12 +18,16 @@ const VideoContainer = () => {
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch("http://localhost:5000/api/getVideoList");
       const data = await response?.json();
       const items = await data?.items;
       setVideoData(items);
     } catch (error) {
       console.log(error);
+      setVideoData([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -31,10 +36,10 @@ const VideoContainer = () => {
     fetchData();
   }, []);
 
-  if (!videosToDisplay) {
+  if (isLoading || !videosToDisplay) {
     return (
       <div
-        className={`flex justify-center items-center min-h-[50vh] ${
+        className={`fixed inset-0 flex justify-center items-center ${
           theme === "dark" ? "bg-[#000000]" : "bg-white"
         }`}
       >
